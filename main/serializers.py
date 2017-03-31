@@ -31,7 +31,9 @@ class ImageSerializer(serializers.ModelSerializer):
         p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
         (output, err) = p.communicate()  
         p_status = p.wait()
-        image = ImageProcessing.objects.create(output=output.replace("\n",""),error=err.replace("\n","") ,**validated_data)
+        if err:
+            error = err.replace("\n","")
+        image = ImageProcessing.objects.create(output=output.replace("\n",""),error=error ,**validated_data)
         return image
 
     class Meta:
