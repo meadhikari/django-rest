@@ -5,3 +5,4 @@ from django.db import models
 class ImageProcessing(models.Model):
     image = models.ImageField(upload_to="tmp")
     output = models.CharField(max_length=500,blank=True)
+    error = models.CharField(max_length=500, blank=True)
