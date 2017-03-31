@@ -48,6 +48,7 @@ class ImageSerializer(serializers.ModelSerializer):
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
             thread.start()
             return image
+        return runInThread(self.postExec,"")
 
     class Meta:
         model = ImageProcessing
