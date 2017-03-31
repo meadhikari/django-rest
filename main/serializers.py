@@ -21,7 +21,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     def postExec(self,output,error,pk):
         obj = ImageProcessing.objects.get(pk=pk)
-        obj.output = output
+        obj.output = output.replace("\n","")
         obj.error = error
         obj.save()
 
