@@ -26,7 +26,21 @@ class ImageProcessingViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = ImageProcessing.objects.all()
+
+    model = User
+
+    def get_object(self):
+        return self.request.user
+
+
+    def get_queryset(self):
+        user = self.get_object()
+        if user.is_superuser:
+            queryset = ImageProcessing.objects.all()
+        else:
+            queryset = ImageProcessing.objects.filter(user=user)
+        return queryset
+
     serializer_class = ImageSerializer
 
 

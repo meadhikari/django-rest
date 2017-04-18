@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 
 
 router = routers.DefaultRouter()
-router.register(r'image', views.ImageProcessingViewSet)
+router.register(r'image', views.ImageProcessingViewSet,'ImageProcessing')
 router.register(r'account', views.UserViewSet)
 
 urlpatterns = [
