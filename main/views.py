@@ -31,7 +31,11 @@ class ImageProcessingViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_superuser:
-            queryset = ImageProcessing.objects.all()
+            username = self.request.query_params.get('username', None)
+            if username is not None:
+                queryset = ImageProcessing.objects.filter(user__username=username)
+            else:
+                queryset = ImageProcessing.objects.all()
         else:
             queryset = ImageProcessing.objects.filter(user=user)
         return queryset
