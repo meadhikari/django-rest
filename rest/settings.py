@@ -144,6 +144,7 @@ MEDIA FILES
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
+FILE_UPLOAD_PERMISSIONS = 0o777
 
 MEDIAFILES_DIRS = [
     os.path.join(os.path.dirname(BASE_DIR), "static", "media"),

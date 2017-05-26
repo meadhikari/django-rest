@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 import time
 from rest_framework import serializers
-from main.models import ImageProcessing
+from main.models import ImageProcessing, Binary
 import envoy
 import subprocess
 import multiprocessing
@@ -27,6 +27,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
+
+class BinarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Binary
+        fields = ('title', 'file','default')
 
 class ImageSerializer(serializers.ModelSerializer):
 
