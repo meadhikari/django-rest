@@ -19,7 +19,6 @@ from main import views
 from rest_framework import routers
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from buildmaintainer.views import upload_file
 from django.conf.urls.static import static
 
 
@@ -34,5 +33,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/', csrf_exempt(views.LoginView)),
     url(r'^logout/', csrf_exempt(views.LogoutView)),
-    url(r'^build/',upload_file)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
