@@ -56,7 +56,7 @@ class ImageSerializer(serializers.ModelSerializer):
                 image = validated_data['image']
                 # md5 = envoy.run("md5 tmp/"+image.name).std_out
                 # md5 = envoy.run("sh /home/anjani/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ tmp/"+image.name)
-                application_name = "VISULYTIX_COMPILED_TOOL" 
+                application_name = str(Binary.objects.filter(default=True)[0].file.name)
                 some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
                 #some_command = "md5 tmp/" + image.name
                 print(some_command)
