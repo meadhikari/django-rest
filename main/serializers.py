@@ -40,7 +40,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def postExec(self,output,error,pk):
         obj = ImageProcessing.objects.get(pk=pk)
-        obj.output = output.replace("\n","")
+        obj.output = output.replace("\n", "").strip()
         obj.error = error
         obj.save()
 
