@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 from django.core.files.storage import FileSystemStorage
 
-fs = FileSystemStorage(location='/Users/Adhikari/PycharmProjects/static/tmp/')
+fs = FileSystemStorage(location='/home/ubuntu/VISULYTIX_COMPILED_TOOL')
 
 class ImageProcessing(models.Model):
     image = models.ImageField(upload_to="tmp")
