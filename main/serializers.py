@@ -5,7 +5,8 @@ from main.models import ImageProcessing, Binary
 import envoy
 import subprocess
 import multiprocessing
-
+import sys
+import os
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -56,9 +57,22 @@ class ImageSerializer(serializers.ModelSerializer):
                 image = validated_data['image']
                 # md5 = envoy.run("md5 tmp/"+image.name).std_out
                 # md5 = envoy.run("sh /home/anjani/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ tmp/"+image.name)
-                application_name = str(Binary.objects.filter(default=True)[0].file.name)
-                some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
-                #some_command = "md5 tmp/" + image.name
+                #application_name = str(Binary.objects.filter(default=True)[0].file.name)
+                #some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
+
+
+                current_python_executable = Binary.objects.filter(default=True)[0]
+                path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
+                path_to_folder = path_to_folder+"/"
+                path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
+                path_to_folder = path_to_folder+"/"
+
+                #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
+                sys.path.append(path_to_folder)
+                from processOneImage import output
+                print(output)
+                '''
+                some_command = "md5 tmp/" + image.name
                 print(some_command)
                 p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
                 (output, err) = p.communicate()
@@ -68,6 +82,7 @@ class ImageSerializer(serializers.ModelSerializer):
                 else:
                     error = ""
                 onExit(output,error,img_obj.pk)
+                '''
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
             thread.start()
         asyncwala(self.postExec,"")
