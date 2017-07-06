@@ -69,8 +69,8 @@ class ImageSerializer(serializers.ModelSerializer):
 
                 #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
                 sys.path.append(path_to_folder)
-                from processOneImage import output
-                print(output)
+                import pegasus as p
+                output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
                 '''
                 some_command = "md5 tmp/" + image.name
                 print(some_command)
@@ -81,8 +81,9 @@ class ImageSerializer(serializers.ModelSerializer):
                     error = err.replace("\n", "")
                 else:
                     error = ""
-                onExit(output,error,img_obj.pk)
                 '''
+                onExit(output,'',img_obj.pk)
+                
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
             thread.start()
         asyncwala(self.postExec,"")
