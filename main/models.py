@@ -6,7 +6,7 @@ from .fields import UniqueBooleanField
 import zipfile
 import time
 fs = FileSystemStorage(location='/home/ubuntu/VISULYTIX_COMPILED_TOOL')
-fs = FileSystemStorage(location='/Users/Adhikari/Downloads')
+fs = FileSystemStorage(location='/home/ubuntu/')
 
 class ImageProcessing(models.Model):
     image = models.ImageField(upload_to="tmp")
@@ -21,11 +21,11 @@ class Binary(models.Model):
     hash = models.CharField(max_length=50,blank=True)
 
     def save(self, *args, **kwargs):
-        zip_file_path = '/Users/Adhikari/Downloads/'+str(self.file).replace(" ","_")
+        zip_file_path = '/home/ubuntu/'+str(self.file).replace(" ","_")
         print(zip_file_path)
         zip_ref = zipfile.ZipFile(zip_file_path, 'r')
         unique_folder_name = int(time.time())
-        zip_ref.extractall('/Users/Adhikari/Downloads/'+str(self.file).replace(" ","_")+str(unique_folder_name))
+        zip_ref.extractall('/home/ubuntu/'+str(self.file).replace(" ","_")+str(unique_folder_name))
         zip_ref.close()
         self.hash = unique_folder_name
         super(Binary, self).save(*args, **kwargs)
