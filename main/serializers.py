@@ -75,14 +75,14 @@ class ImageSerializer(serializers.ModelSerializer):
                 sys.path.append(path_to_folder)
                 os.chdir(path_to_folder)
                 import pegasus as p
-                if profile.usage < 100:
-                    output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
+                output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
+                if profile.usage >=100:
+                    output = str({"outputs": [{"img": "", "name": "", "value": ""}],
+                                  "error": "Limit Exceeded. Please Contact the Administrator"})
+                else:
                     profile.usage = profile.usage + 1
                     profile.save()
 
-                else:
-                    output = str({"outputs": [{"img": "", "name": "", "value": ""}],
-                                  "error": "Limit Exceeded. Please Contact the Administrator"})
                 '''
                 some_command = "md5 tmp/" + image.name
                 print(some_command)
