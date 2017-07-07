@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 import time
 from rest_framework import serializers
-from main.models import ImageProcessing, Binary
+from main.models import ImageProcessing, Binary,Profile
 import envoy
 import subprocess
 import multiprocessing
@@ -50,6 +50,8 @@ class ImageSerializer(serializers.ModelSerializer):
         validated_data.pop('output')
         validated_data.pop('error')
         user = self.context['request'].user
+        profile = Profile.objects.filter(user=user)[0]
+        usage = profile.usage
 
         img_obj = ImageProcessing.objects.create(output="Processing...", error='', user=user,**validated_data)
         def asyncwala(onExit,popenArgs):
@@ -60,32 +62,36 @@ class ImageSerializer(serializers.ModelSerializer):
                 #application_name = str(Binary.objects.filter(default=True)[0].file.name)
                 #some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
 
+                if usage < 100:
+                    profile.usage = profile.usage+1
+                    profile.save()
+                    current_python_executable = Binary.objects.filter(default=True)[0]
+                    #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
+                    path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
+                    path_to_folder = path_to_folder+"/"
+                    path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
+                    path_to_folder = path_to_folder+"/"
 
-                current_python_executable = Binary.objects.filter(default=True)[0]
-                #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
-                path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
-                path_to_folder = path_to_folder+"/"
-                path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
-                path_to_folder = path_to_folder+"/"
-
-                #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
-                print(path_to_folder)
-                path_to_folder = "/home/ubuntu/test_python/"
-                sys.path.append(path_to_folder)
-                os.chdir(path_to_folder)
-                import pegasus as p
-                output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
-                '''
-                some_command = "md5 tmp/" + image.name
-                print(some_command)
-                p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
-                (output, err) = p.communicate()
-                p_status = p.wait()
-                if err:
-                    error = err.replace("\n", "")
+                    #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
+                    print(path_to_folder)
+                    path_to_folder = "/home/ubuntu/test_python/"
+                    sys.path.append(path_to_folder)
+                    os.chdir(path_to_folder)
+                    import pegasus as p
+                    output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
+                    '''
+                    some_command = "md5 tmp/" + image.name
+                    print(some_command)
+                    p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
+                    (output, err) = p.communicate()
+                    p_status = p.wait()
+                    if err:
+                        error = err.replace("\n", "")
+                    else:
+                        error = ""
+                    '''
                 else:
-                    error = ""
-                '''
+                    output = {"outputs": [{"img": "", "name": "", "value": ""}], "error": "Limit Exceeded. Please Contact the Administrator"}
                 onExit(output,'',img_obj.pk)
                 
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
