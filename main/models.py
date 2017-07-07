@@ -5,8 +5,10 @@ from django.core.files.storage import FileSystemStorage
 from .fields import UniqueBooleanField
 import zipfile
 import time
+from django.db.models.signals import post_save
+unique_folder_name = int(time.time())
 fs = FileSystemStorage(location='/home/ubuntu/VISULYTIX_COMPILED_TOOL')
-fs = FileSystemStorage(location='/home/ubuntu/')
+#fs = FileSystemStorage(location='/home/ubuntu/')
 
 class ImageProcessing(models.Model):
     image = models.ImageField(upload_to="tmp")
@@ -18,15 +20,16 @@ class Binary(models.Model):
     title = models.CharField(max_length=50)
     file = models.FileField(storage=fs)
     default = UniqueBooleanField()
-    hash = models.CharField(max_length=50,blank=True)
+    hash = models.CharField(max_length=50,blank=True,default=unique_folder_name)
 
-    def save(self, *args, **kwargs):
-        zip_file_path = '/home/ubuntu/'+str(self.file).replace(" ","_")
-        print(zip_file_path)
-        zip_ref = zipfile.ZipFile(zip_file_path, 'r')
-        unique_folder_name = int(time.time())
-        zip_ref.extractall('/home/ubuntu/'+str(self.file).replace(" ","_")+str(unique_folder_name))
-        zip_ref.close()
-        self.hash = unique_folder_name
-        super(Binary, self).save(*args, **kwargs)
+def post_saveops(sender, **kwargs):
+     self = kwargs.get('instance')
+     zip_file_path = '/home/ubuntu/VISULYTIX_COMPILED_TOOL/'+str(self.file).replace(" ","_")
+     print(zip_file_path)
+     zip_ref = zipfile.ZipFile(zip_file_path, 'r')
+     zip_ref.extractall('/home/ubuntu/VISULYTIX_COMPILED_TOOL/'+str(self.file).replace(" ","_")+str(unique_folder_name))
+     zip_ref.close()
+
+post_save.connect(post_saveops, sender=Binary)
+ 
 

@@ -41,7 +41,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def postExec(self,output,error,pk):
         obj = ImageProcessing.objects.get(pk=pk)
-        obj.output = output.replace("\n", "").strip()
+        obj.output = output.replace("\n", "").strip().replace("/home/ubuntu/output_images/","")
         obj.error = error
         obj.save()
 
@@ -62,13 +62,17 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
                 current_python_executable = Binary.objects.filter(default=True)[0]
-                path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
+                #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
+                path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
                 path_to_folder = path_to_folder+"/"
                 path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
                 path_to_folder = path_to_folder+"/"
 
                 #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
+                print(path_to_folder)
+                path_to_folder = "/home/ubuntu/test_python/"
                 sys.path.append(path_to_folder)
+                os.chdir(path_to_folder)
                 import pegasus as p
                 output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
                 '''
