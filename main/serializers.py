@@ -91,7 +91,7 @@ class ImageSerializer(serializers.ModelSerializer):
                         error = ""
                     '''
                 else:
-                    output = {"outputs": [{"img": "", "name": "", "value": ""}], "error": "Limit Exceeded. Please Contact the Administrator"}
+                    output = str({"outputs": [{"img": "", "name": "", "value": ""}], "error": "Limit Exceeded. Please Contact the Administrator"})
                 onExit(output,'',img_obj.pk)
                 
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
