@@ -62,36 +62,39 @@ class ImageSerializer(serializers.ModelSerializer):
                 #application_name = str(Binary.objects.filter(default=True)[0].file.name)
                 #some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
 
-                if usage < 100:
-                    profile.usage = profile.usage+1
-                    profile.save()
-                    current_python_executable = Binary.objects.filter(default=True)[0]
-                    #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
-                    path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
-                    path_to_folder = path_to_folder+"/"
-                    path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
-                    path_to_folder = path_to_folder+"/"
+                current_python_executable = Binary.objects.filter(default=True)[0]
+                #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
+                path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
+                path_to_folder = path_to_folder+"/"
+                path_to_folder = path_to_folder+ '_'.join(str(Binary.objects.filter(default=True)[0].file.name).replace(".zip","").split("_")[:-1])
+                path_to_folder = path_to_folder+"/"
 
-                    #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
-                    print(path_to_folder)
-                    path_to_folder = "/home/ubuntu/test_python/"
-                    sys.path.append(path_to_folder)
-                    os.chdir(path_to_folder)
-                    import pegasus as p
+                #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
+                print(path_to_folder)
+                path_to_folder = "/home/ubuntu/test_python/"
+                sys.path.append(path_to_folder)
+                os.chdir(path_to_folder)
+                import pegasus as p
+                if profile.usage < 100:
                     output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
-                    '''
-                    some_command = "md5 tmp/" + image.name
-                    print(some_command)
-                    p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
-                    (output, err) = p.communicate()
-                    p_status = p.wait()
-                    if err:
-                        error = err.replace("\n", "")
-                    else:
-                        error = ""
-                    '''
+                    profile.usage = profile.usage + 1
+                    profile.save()
+
                 else:
-                    output = str({"outputs": [{"img": "", "name": "", "value": ""}], "error": "Limit Exceeded. Please Contact the Administrator"})
+                    output = str({"outputs": [{"img": "", "name": "", "value": ""}],
+                                  "error": "Limit Exceeded. Please Contact the Administrator"})
+                '''
+                some_command = "md5 tmp/" + image.name
+                print(some_command)
+                p = subprocess.Popen(some_command, stdout=subprocess.PIPE, shell=True)
+                (output, err) = p.communicate()
+                p_status = p.wait()
+                if err:
+                    error = err.replace("\n", "")
+                else:
+                    error = ""
+                '''
+                #
                 onExit(output,'',img_obj.pk)
                 
             thread = multiprocessing.Process(target=runInThread, args=(onExit, popenArgs))
