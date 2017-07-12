@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from main.serializers import UserSerializer, GroupSerializer,ImageSerializer,BinarySerializer
-from main.models import ImageProcessing,Binary
+from main.serializers import UserSerializer, GroupSerializer,ImageSerializer,BinarySerializer,ProfileSerializer
+from main.models import ImageProcessing,Binary,Profile
 from django.http import JsonResponse
 from django.contrib.auth import logout
 
@@ -28,6 +28,18 @@ class BinaryViewSet(viewsets.ModelViewSet):
     """
     queryset = Binary.objects.all()
     serializer_class = BinarySerializer
+class ProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Profile.objects.filter(user=user)
+        return queryset
+
+    serializer_class = ProfileSerializer
 
 class ImageProcessingViewSet(viewsets.ModelViewSet):
     """

@@ -29,6 +29,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ('url', 'name')
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('user', 'usage','limit')
 class BinarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Binary
@@ -78,7 +82,7 @@ class ImageSerializer(serializers.ModelSerializer):
                 os.chdir(path_to_folder)
                 import pegasus as p
                 output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
-                if profile.usage >=100:
+                if profile.usage >=profile.limit:
                     output = str({"outputs": [{"img": "", "name": "", "value": ""}],
                                   "error":{"message":"Limit Exceeded. Please Contact the Administrator"}})
                 else:

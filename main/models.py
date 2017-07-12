@@ -22,6 +22,7 @@ class ImageProcessing(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     usage = models.IntegerField(default=0,max_length=3)
+    limit = models.IntegerField(default=100,max_length=3)
 
 class Binary(models.Model):
     title = models.CharField(max_length=50)
