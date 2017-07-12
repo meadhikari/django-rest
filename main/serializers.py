@@ -62,6 +62,7 @@ class ImageSerializer(serializers.ModelSerializer):
                 #application_name = str(Binary.objects.filter(default=True)[0].file.name)
                 #some_command = "/bin/bash /home/ubuntu/VISULYTIX_COMPILED_TOOL/run_VISULYTIX_COMPILED_TOOL.sh /usr/local/MATLAB/MATLAB_Runtime/v91/ /home/ubuntu/static/media/tmp/"+image.name.replace(" ","_")+" "+application_name
 
+                '''
                 current_python_executable = Binary.objects.filter(default=True)[0]
                 #path_to_folder  = "_".join(str(Binary.objects.filter(default=True)[0].file.path).replace(".zip","").split("_")[:-1])+".zip"+current_python_executable.hash
                 path_to_folder  = str(Binary.objects.filter(default=True)[0].file.path)+current_python_executable.hash
@@ -71,6 +72,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
                 #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
                 print(path_to_folder)
+                '''
                 path_to_folder = "/home/ubuntu/test_python/"
                 sys.path.append(path_to_folder)
                 os.chdir(path_to_folder)
@@ -78,7 +80,7 @@ class ImageSerializer(serializers.ModelSerializer):
                 output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
                 if profile.usage >=100:
                     output = str({"outputs": [{"img": "", "name": "", "value": ""}],
-                                  "error": "Limit Exceeded. Please Contact the Administrator"})
+                                  "error":{"message":"Limit Exceeded. Please Contact the Administrator"}})
                 else:
                     profile.usage = profile.usage + 1
                     profile.save()
