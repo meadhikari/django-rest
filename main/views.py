@@ -52,7 +52,7 @@ class ImageProcessingViewSet(viewsets.ModelViewSet):
         if user.is_superuser:
             username = self.request.query_params.get('username', None)
             if username is not None:
-                queryset = ImageProcessing.objects.filter(user__username=username)
+                queryset = ImageProcessing.objects.filter(user__username=username).order_by('-id')
             else:
                 queryset = ImageProcessing.objects.all()
         else:
@@ -60,7 +60,11 @@ class ImageProcessingViewSet(viewsets.ModelViewSet):
         return queryset
 
     serializer_class = ImageSerializer
+    ordering = ('id',)
 
+    def filter_queryset(self, queryset):
+    	queryset = super(ImageProcessingViewSet, self).filter_queryset(queryset)
+    	return queryset.order_by('-id')
 
 def LoginView(request):
     from django.contrib.auth import authenticate
