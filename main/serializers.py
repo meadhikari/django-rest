@@ -7,7 +7,8 @@ import subprocess
 import multiprocessing
 import sys
 import os
-
+#from django.conf import settings
+from rest import settings
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -76,12 +77,26 @@ class ImageSerializer(serializers.ModelSerializer):
 
                 #full_path = '/Users/Adhikari/Downloads/'+str(current_python_executable.file.name)+str(hash)+"."+str(current_python_executable.file.name)+"."+"dependency"
                 print(path_to_folder)
-                '''
                 path_to_folder = "/home/ubuntu/test_python/"
                 sys.path.append(path_to_folder)
                 os.chdir(path_to_folder)
-                import pegasus as p
-                output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
+		os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+		# Import pegasus
+		import pegasus as p
+
+		# Pre-loaded models and new output types
+		model_discAnomaly, model_vcdr_prediction, model_disc_detection, sess_disc_detection = p.generate_models()
+
+		print('Done loading')
+		
+		output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"),'/home/ubuntu/output_images/',
+                        model_disc_anomaly=model_discAnomaly, model_vcdr_prediction=model_vcdr_prediction,
+                        model_disc_detection=model_disc_detection, session_disc_detection=sess_disc_detection, legacy_output=False, verbosity=None)
+		'''
+                output = settings.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"),'/home/ubuntu/output_images/')
+		print(output)
+
+                #output = p.processImage("/home/ubuntu/static/media/tmp/"+image.name.replace(" ","_"), '/home/ubuntu/output_images/')
                 if profile.usage >=profile.limit:
                     output = str({"outputs": [{"img": "", "name": "", "value": ""}],
                                   "error":{"message":"Limit Exceeded. Please Contact the Administrator"}})

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
+import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -161,3 +161,27 @@ REST_FRAMEWORK = {
     ],
     'PAGE_SIZE': 10
 }
+path_to_folder = "/home/ubuntu/test_python/"
+sys.path.append(path_to_folder)
+import os
+cwd = os.getcwd()
+os.chdir(path_to_folder)
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+# Import pegasus
+import pegasus as p
+# Pre-loaded models and new output types
+model_discAnomaly, model_vcdr_prediction, model_disc_detection, sess_disc_detection = p.generate_models()
+def processImage(input_image,output_path):
+        cwd = os.getcwd()
+        print 'I did cum here'
+	path_to_folder = "/home/ubuntu/test_python/"
+	os.chdir(path_to_folder)
+	output = p.processImage(input_image,output_path,
+                        model_disc_anomaly=model_discAnomaly, model_vcdr_prediction=model_vcdr_prediction,
+                        model_disc_detection=model_disc_detection, session_disc_detection=sess_disc_detection, legacy_output=False, verbosity=True)
+        print output
+        print 'But never here'
+        os.chdir(cwd)
+        return output
+os.chdir(cwd)
+
