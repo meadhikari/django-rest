@@ -173,15 +173,12 @@ model_discAnomaly, model_vcdr_prediction, model_disc_detection, sess_disc_detect
 # Pre-loaded models and new output types
 def processImage(input_image,output_path):
         cwd = os.getcwd()
-        print 'I did cum here'
-	path_to_folder = "/home/ubuntu/test_python/"
-	os.chdir(path_to_folder)
-	output = p.processImage(input_image,output_path,
+        path_to_folder = "/home/ubuntu/test_python/"
+        os.chdir(path_to_folder)
+        output = p.processImage(input_image,output_path,
  			model_disc_anomaly=model_discAnomaly, model_vcdr_prediction=model_vcdr_prediction,
                         model_disc_detection=model_disc_detection, session_disc_detection=sess_disc_detection, legacy_output=False, verbosity=None, graph_disc_anomaly=graph_disc_anomaly, graph_vcdr=graph_vcdr)
 
-        print output
-        print 'But never here'
         os.chdir(cwd)
         return output
 os.chdir(cwd)
