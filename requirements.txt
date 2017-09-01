@@ -1,0 +1,16 @@
+certifi==2017.7.27.1
+chardet==3.0.4
+Django==1.9
+django-async-tasks==0.1.1
+django-cors-headers==2.0.2
+django-redis-cache==1.7.1
+django-registration-rest-framework==0.3.0
+django-rest-authemail==1.4.0
+djangorestframework==3.3.3
+envoy==0.0.3
+idna==2.6
+olefile==0.44
+Pillow==4.0.0
+redis==2.10.5
+requests==2.18.4
+urllib3==1.22
