@@ -1,6 +1,6 @@
 certifi==2017.7.27.1
 chardet==3.0.4
-Django==1.9
+Django==2.2.24
 django-async-tasks==0.1.1
 django-cors-headers==2.0.2
 django-redis-cache==1.7.1
